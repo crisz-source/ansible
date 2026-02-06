@@ -1,0 +1,25 @@
+---
+- name: Demonstrar uso de facts
+  hosts: local
+  tasks:
+    # ansible_* -> Variáveis coletadas automaticamente no "Gathering Facts"
+    # São úteis pra tomar decisões baseadas no servidor (ex: instalar pacote diferente por SO)s
+    - name: Mostrar sistema operacional
+      debug:
+        msg: "SO: {{ ansible_distribution }} {{ ansible_distribution_version }}"
+
+    - name: Mostrar arquitetura
+      debug:
+        msg: "Arquitetura: {{ ansible_architecture }}"
+
+    - name: Mostrar memoria total
+      debug:
+        msg: "Memoria: {{ ansible_memtotal_mb }} MB"
+
+    - name: Mostrar IP
+      debug:
+        msg: "IP: {{ ansible_default_ipv4.address }}"
+
+    - name: Mostrar hostname
+      debug:
+        msg: "Hostname: {{ ansible_hostname }}"

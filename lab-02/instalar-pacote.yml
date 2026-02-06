@@ -1,0 +1,23 @@
+---
+- name: Instalar pacotes no sistema
+  hosts: local
+  become: yes # equivalente ao sudo
+  tasks:
+    - name: Atualizar cache do apt
+      apt: 
+        update_cache: yes # Roda apt update antes
+        cache_valid_time: 3600 # Não atualiza se fez há menos de 1 hora
+
+    - name: Instalar htop
+      apt:
+        name: htop
+        state: present # Garante que está instalado
+
+    - name: Verificar versao instalada
+      shell: htop --version
+      register: htop_version # Salva a saída do comando numa variável
+      changed_when: false #Não marca como changed (é só leitura)
+
+    - name: Mostrar versao
+      debug:
+        msg: "{{ htop_version.stdout }}" #Acessa o output do comando

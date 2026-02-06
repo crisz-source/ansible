@@ -1,7 +1,7 @@
 ---
 - name: Meu primeiro playbook
-  hosts: local
-  tasks:
+  hosts: local #Grupo do inventário (maquina) onde vai executar
+  tasks:  # Lista de tarefas a executar
     - name: Criar arquivo de teste
       file: # módulo
         path: /tmp/playbook-teste.txt

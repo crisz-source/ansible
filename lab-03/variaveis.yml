@@ -1,0 +1,28 @@
+---
+- name: Demonstrar uso de variaveis
+  hosts: local
+  vars: # Bloco onde define variáveis
+  #definindo variável
+    pacotes:
+      - vim
+      - curl
+      - wget
+    mensagem: "Playbook executado com sucesso"
+    diretorio: "/tmp/ansible-lab03"
+
+      # escrevedo variável: {{ variavel }}
+  tasks:
+    - name: Criar diretorio
+      file:
+        path: "{{ diretorio }}" # variavel
+        state: directory
+        mode: '0755'
+
+    - name: Criar arquivo com mensagem
+      copy:
+        content: "{{ mensagem }}\n" # variavel
+        dest: "{{ diretorio }}/info.txt" # variavel
+
+    - name: Mostrar lista de pacotes
+      debug:
+        msg: "Pacotes definidos: {{ pacotes }}" # variavel

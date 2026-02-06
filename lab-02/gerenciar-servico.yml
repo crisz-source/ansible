@@ -1,0 +1,25 @@
+---
+- name: Instalar e gerenciar Nginx
+  hosts: local
+  become: yes
+  tasks:
+    - name: Instalar Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Garantir que Nginx esta rodando
+      service: # Gerenciar serviços (start, stop, restart)
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Verificar status do Nginx
+      shell: systemctl status nginx --no-pager | head -5
+      register: nginx_status
+      changed_when: false #Não marca como changed (é só leitura)
+
+    - name: Mostrar status
+      debug:
+        msg: "{{ nginx_status.stdout_lines }}"

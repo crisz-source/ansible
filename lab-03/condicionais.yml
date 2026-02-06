@@ -1,0 +1,25 @@
+---
+- name: Demonstrar condicionais
+  hosts: local
+  become: yes
+  tasks:
+    - name: Instalar pacote apenas no Ubuntu
+      apt:
+        name: cowsay
+        state: present
+      when: ansible_distribution == "Ubuntu" # Condição pra executar a task, Usa facts coletados automaticamente
+
+    - name: Mostrar mensagem se tiver mais de 16GB de RAM
+      debug: # O debug é um módulo que só mostra mensagens na tela. Não faz nada no servidor.
+        msg: "Maquina com bastante memoria: {{ ansible_memtotal_mb }} MB"
+      when: ansible_memtotal_mb > 16000 # Executar task apenas se condição for verdadeira
+
+    - name: Mostrar mensagem se for 64 bits
+      debug:
+        msg: "Sistema 64 bits detectado"
+      when: ansible_architecture == "x86_64"
+
+    - name: Task que seria pulada (exemplo)
+      debug:
+        msg: "Isso nunca vai aparecer"
+      when: ansible_distribution == "CentOS"

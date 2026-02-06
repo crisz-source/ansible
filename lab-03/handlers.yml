@@ -1,0 +1,31 @@
+---
+- name: Demonstrar handlers
+  hosts: local
+  become: yes
+  vars:
+    nginx_port: 9090
+
+  tasks:
+    - name: Criar configuracao customizada do Nginx
+      copy:
+        content: |
+          server {
+              listen {{ nginx_port }};
+              root /var/www/html;
+              index index.html;
+          }
+        dest: /etc/nginx/sites-available/custom
+      notify: Reiniciar Nginx # Chama o handler se a task mudar algo
+
+    - name: Habilitar site customizado
+      file:
+        src: /etc/nginx/sites-available/custom # Arquivo original
+        dest: /etc/nginx/sites-enabled/custom # Link que aponta pro original
+        state: link # Cria um link simbólico (symlink)
+      notify: Reiniciar Nginx # Chama o handler se a task mudar algo
+
+  handlers: # Bloco separado das tasks
+    - name: Reiniciar Nginx
+      service:
+        name: nginx
+        state: restarted

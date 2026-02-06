@@ -1,0 +1,24 @@
+---
+- name: Copiar pagina customizada para Nginx
+  hosts: local
+  become: yes
+  tasks:
+    - name: Copiar index.html para o Nginx
+      copy:
+        src: ./src/index.html
+        dest: /var/www/html/index.html # Destino no servidor
+
+        #Dono e grupo do arquivo
+        owner: www-data
+        group: www-data
+        mode: '0644' #Permissões (como chmod)
+
+    - name: Verificar se a pagina esta acessivel
+      uri: # Módulo pra fazer requisições HTTP
+        url: http://localhost
+        return_content: yes #  faz o módulo uri retornar o conteúdo da página na variávels
+      register: pagina
+
+    - name: Mostrar conteudo da pagina
+      debug:
+        msg: "{{ pagina.content }}"
