@@ -1,0 +1,17 @@
+---
+- name: Meu primeiro playbook
+  hosts: local
+  tasks:
+    - name: Criar arquivo de teste
+      file: # módulo
+        path: /tmp/playbook-teste.txt
+        state: touch
+
+    - name: Adicionar conteudo ao arquivo
+      copy: # módulo
+        content: "Arquivo criado pelo playbook Ansible\n"
+        dest: /tmp/playbook-teste.txt
+
+    - name: Mostrar mensagem
+      debug: # módulo
+        msg: "Playbook executado com sucesso!"
