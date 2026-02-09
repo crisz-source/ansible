@@ -1,0 +1,26 @@
+---
+- name: Demonstrar error handling
+  hosts: local
+  tasks:
+    - name: Bloco com tratamento de erro
+      block: #  Agrupa tasks
+        - name: Task que vai funcionar
+          debug:
+            msg: "Isso funciona"
+
+        - name: Task que vai falhar
+          command: /bin/comando_inexistente
+
+        - name: Task que nunca executa
+          debug:
+            msg: "Isso nunca aparece"
+
+      rescue: # Executa se algo no block falhar
+        - name: Executado quando block falha
+          debug:
+            msg: "ERRO! Algo deu errado no block"
+
+      always: #  Executa sempre, independente do resultado
+        - name: Sempre executa (sucesso ou falha)
+          debug:
+            msg: "Limpeza ou log - sempre roda"

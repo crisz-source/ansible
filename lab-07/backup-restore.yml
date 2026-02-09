@@ -1,0 +1,44 @@
+---
+- name: Exemplo pratico - backup antes de modificar
+  hosts: local
+  vars:
+    config_file: /tmp/app.conf
+
+  tasks:
+    - name: Criar arquivo de config original
+      copy:
+        content: "CONFIG_ORIGINAL=true\n"
+        dest: "{{ config_file }}"
+
+    - name: Modificar config com seguranca
+      block:
+        - name: Fazer backup
+          copy:
+            src: "{{ config_file }}"
+            dest: "{{ config_file }}.bak"
+            remote_src: yes
+
+        - name: Modificar config (simular falha)
+          shell: |
+            echo "CONFIG_NOVO=true" > {{ config_file }}
+            exit 1
+
+      rescue:
+        - name: Restaurar backup
+          copy:
+            src: "{{ config_file }}.bak"
+            dest: "{{ config_file }}"
+            remote_src: yes
+
+        - name: Avisar sobre falha
+          debug:
+            msg: "Falha na modificacao! Backup restaurado."
+
+      always:
+        - name: Mostrar conteudo final
+          command: cat {{ config_file }}
+          register: config_final
+
+        - name: Exibir config
+          debug:
+            msg: "{{ config_final.stdout }}"

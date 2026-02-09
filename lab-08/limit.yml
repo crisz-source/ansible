@@ -1,0 +1,7 @@
+---
+- name: Demonstrar limit
+  hosts: all
+  tasks:
+    - name: Mostrar hostname
+      debug:
+        msg: "Executando em: {{ inventory_hostname }}"

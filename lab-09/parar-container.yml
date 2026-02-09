@@ -1,0 +1,25 @@
+---
+- name: Parar e remover container
+  hosts: local
+  become: yes
+  tasks:
+    - name: Parar container Nginx
+      docker_container:
+        name: nginx-ansible
+        image: nginx:latest
+        state: stopped # Para o container
+
+    - name: Remover container Nginx
+      docker_container:
+        name: nginx-ansible
+        image: nginx:latest
+        state: absent # Remove o container
+
+    - name: Verificar containers
+      command: docker ps -a --filter name=nginx-ansible
+      register: containers
+      changed_when: false # # Nunca marca changed
+
+    - name: Mostrar resultado
+      debug:
+        msg: "{{ containers.stdout_lines }}"

@@ -1,0 +1,44 @@
+---
+- name: Demonstrar tags
+  hosts: local
+  tasks:
+    - name: Setup - Criar diretorio
+      file:
+        path: /tmp/app
+        state: directory
+      tags: # Lista de tags da task
+        - setup
+        - always # Sempre executa, mesmo com --tags
+
+    - name: Config - Criar arquivo de config
+      copy:
+        content: "APP_ENV=production\n"
+        dest: /tmp/app/config.env
+      tags:
+        - config
+
+    - name: Deploy - Simular deploy
+      debug:
+        msg: "Deploying application..."
+      tags:
+        - deploy
+
+    - name: Test - Verificar arquivos
+      command: ls -la /tmp/app
+      register: resultado
+      tags:
+        - test
+
+    - name: Test - Mostrar resultado
+      debug:
+        msg: "{{ resultado.stdout_lines }}"
+      tags:
+        - test
+
+    - name: Cleanup - Remover arquivos
+      file:
+        path: /tmp/app
+        state: absent
+      tags:
+        - cleanup
+        - never # Nunca executa, a menos que explicitamente chamada

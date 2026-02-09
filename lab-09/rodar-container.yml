@@ -1,0 +1,21 @@
+---
+- name: Gerenciar containers com Ansible
+  hosts: local
+  become: yes
+  tasks:
+    - name: Rodar container Nginx
+      docker_container: # Módulo pra gerenciar containers
+        name: nginx-ansible # Nome do container
+        image: nginx:latest # Imagem a usar
+        state: started # Garante que está rodando, cria e inicia (ou só inicia se existir)
+        ports: # Mapeamento de portas (host:container)
+          - "8080:80"
+
+    - name: Verificar container rodando
+      command: docker ps --filter name=nginx-ansible --format "{{ '{{' }}.Names{{ '}}' }} - {{ '{{' }}.Status{{ '}}' }}"
+      register: container_status
+      changed_when: false
+
+    - name: Mostrar status
+      debug:
+        msg: "{{ container_status.stdout }}"
