@@ -1,0 +1,6 @@
+---
+- name: Configurar webserver
+  hosts: local
+  become: yes
+  roles:
+    - webserver

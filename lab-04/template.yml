@@ -1,0 +1,19 @@
+---
+- name: Demonstrar templates
+  hosts: local
+  become: yes
+  vars:
+    titulo: "Pagina gerada por Ansible"
+
+  tasks:
+    - name: Gerar pagina a partir do template
+      template:  # Processa variáveis Jinja2 antes de cop
+        src: templates/index.html.j2
+        dest: /var/www/html/info.html
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Mostrar URL
+      debug:
+        msg: "Acesse: http://localhost/info.html"

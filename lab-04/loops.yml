@@ -1,0 +1,36 @@
+---
+- name: Demonstrar loops
+  hosts: local
+  become: yes
+  vars:
+    pacotes:
+      - tree
+      - ncdu
+      - tldr
+    
+    usuarios:
+      - nome: dev1
+        shell: /bin/bash
+      - nome: dev2
+        shell: /bin/bash
+
+  tasks:
+    - name: Instalar varios pacotes
+      apt:
+        name: "{{ item }}" # Item atual da iteração
+        state: present
+      loop: "{{ pacotes }}" # Lista de itens pra iterar
+
+    - name: Criar diretorios
+      file:
+        path: "/tmp/ansible-{{ item }}"
+        state: directory
+      loop:
+        - app
+        - logs
+        - config
+
+    - name: Mostrar usuarios definidos
+      debug:
+        msg: "Usuario: {{ item.nome }} - Shell: {{ item.shell }}" # Acessa atributo quando item é dicionário
+      loop: "{{ usuarios }}"

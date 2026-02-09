@@ -1,0 +1,9 @@
+---
+- name: Configurar webserver customizado
+  hosts: local
+  become: yes
+  roles:
+    - role: webserver
+      vars:
+        http_port: 9090
+        server_name: meusite.local
